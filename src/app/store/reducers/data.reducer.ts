@@ -1,10 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
-import {loadJsonData} from './data.actions';
-import {DataItem} from '../../models/data.model';
-
-export interface DataState {
-  data: Array<DataItem>;
-}
+import {loadJsonData} from '../actions/data.actions';
+import {DataState} from '../../types/data.types';
 
 export const initialState: DataState = {
   data: []

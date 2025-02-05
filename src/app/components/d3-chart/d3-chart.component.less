@@ -1,0 +1,46 @@
+.container {
+  max-height: 400px;
+  display: flex;
+  gap: 20px;
+}
+
+.pie-chart,
+.bar-chart {
+  width: 400px;
+  height: 400px;
+  margin: auto;
+  padding: 20px;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: gray;
+  color: black;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: 12px;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility .2s ease-in-out;
+}
+
+.no-file {
+  padding-block: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    max-height: max-content;
+  }
+}
+
+@media (max-width: 480px) {
+  .pie-chart,
+  .bar-chart {
+    width: 300px;
+    height: 300px;
+  }
+}

@@ -1,8 +1,26 @@
-import {FilterOption, SortOption} from '../components/chart-filter/chart-filter-config';
-import {DataItem} from '../models/data.model';
+import {DataItem} from './data.types';
 
-export interface FilterState {
+export type SortOption = {
+  label: string;
+  value: 'asc' | 'desc' | '';
+};
+
+export type MinValueOption = {
+  label: string;
+  value: '' | 'non-zero' | 'min';
+};
+
+export type FormFieldFilter = {
+  label: string;
+  value: string;
+}
+
+export type FilterOption = {
   sortOption: SortOption;
-  minValue: FilterOption;
-  filterData: Array<DataItem>;
+  minValueOption: MinValueOption;
+}
+
+export type FilterState = {
+  filterOptions: FilterOption;
+  filteredData: Array<DataItem>;
 }

@@ -1,0 +1,24 @@
+<p-table
+  [value]="data"
+  responsiveLayout="scroll"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Название</th>
+      <th>Дата загрузки</th>
+      <th>Действие</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-file>
+    <tr>
+      <td>{{ file.fileName }}</td>
+      <td>{{ file.uploadDate | date: 'dd.MM.yyyy HH:MM'  }}</td>
+      <td>
+        <p-button
+          icon="pi pi-file"
+          (click)="selectFile(file)"
+        />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

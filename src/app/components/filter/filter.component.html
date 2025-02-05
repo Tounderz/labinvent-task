@@ -1,0 +1,17 @@
+<div class="filter-panel">
+  <form
+    [formGroup]="formGroup"
+    class="form"
+  >
+    @for (field of formFields; track field.value) {
+      <p-select
+        class="select"
+        optionLabel="label"
+        optionValue="value"
+        [options]="getOptions(field.value)"
+        [formControlName]="field.value"
+        (onChange)="applyFilters()"
+      ></p-select>
+    }
+  </form>
+</div>

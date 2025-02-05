@@ -1,0 +1,14 @@
+<div class="wrapper">
+  <p-toast/>
+  <p-fileUpload
+    mode="basic"
+    name="file"
+    accept="application/json"
+    chooseLabel="Открыть"
+    chooseIcon="pi pi-upload"
+    [maxFileSize]="maxFileSize"
+    (onSelect)="onFileChange($event)"
+    [auto]="true"
+    [customUpload]="true">
+  </p-fileUpload>
+</div>

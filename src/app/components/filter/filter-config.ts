@@ -1,19 +1,6 @@
-export type SortOption = {
-  label: string;
-  value: 'asc' | 'desc' | '';
-};
+import {FormFieldFilter, MinValueOption, SortOption} from "../../types/filter.types";
 
-export type MinValueOption = {
-  label: string;
-  value: '' | 'non-zero' | 'min';
-};
-
-export type FormField = {
-  label: string;
-  value: string;
-}
-
-export const formFields: Array<FormField> = [
+export const formFields: Array<FormFieldFilter> = [
   {
     label: 'Катерогия',
     value: 'sortOrder',

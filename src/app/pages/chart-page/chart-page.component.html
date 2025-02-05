@@ -1,0 +1,12 @@
+<div class="wrapper">
+  <div class="file-chart-container">
+    <app-file-upload
+      (fileChange)="onFileChange($event)"
+    ></app-file-upload>
+    <app-filter></app-filter>
+  </div>
+  <app-d3-chart></app-d3-chart>
+  <app-history
+    (fileSelected)="onSelectFile($event)"
+  ></app-history>
+</div>

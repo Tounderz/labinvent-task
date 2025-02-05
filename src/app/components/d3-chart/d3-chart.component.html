@@ -1,0 +1,21 @@
+@if(data.length) {
+  <div
+    class="container"
+  >
+    <svg
+      #pieChart
+      id="pie-chart"
+      class="pie-chart"
+      viewBox="0 0 400 400"
+    ></svg>
+    <svg
+      #barChart
+      id="bar-chart"
+      class="bar-chart"
+      viewBox="0 0 400 400"
+    ></svg>
+  </div>
+  <div id="tooltip" class="tooltip"></div>
+} @else {
+  <h2 class="no-file">Файл не выбран</h2>
+}
