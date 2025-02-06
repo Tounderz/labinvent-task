@@ -43,6 +43,10 @@ export class FilterComponent implements OnInit, OnDestroy {
     this.setFilteredData();
   }
 
+  public getOptions(key: string): Array<MinValueOption> | Array<SortOption> {
+    return key === 'sortOrder' ? sortOptions : minValueOptions
+  }
+
   private initForm(): void {
     const group: { [key: string]: FormControl } = {};
     this.formFields.forEach((field: FormFieldFilter) => {
@@ -112,9 +116,5 @@ export class FilterComponent implements OnInit, OnDestroy {
     };
 
     return data.filter(filterMap[this.minValueOption] || filterMap['']);
-  }
-
-  public getOptions(key: string): Array<MinValueOption> | Array<SortOption> {
-    return key === 'sortOrder' ? sortOptions : minValueOptions
   }
 }

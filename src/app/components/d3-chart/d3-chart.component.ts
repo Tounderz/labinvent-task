@@ -29,6 +29,8 @@ export class D3ChartComponent implements OnInit, OnDestroy {
   public filteredData$: Observable<FilterState> = this.store.select(state => state.filteredData);
   public data: Array<DataItem> = [];
   private subscriptions: Subscription = new Subscription();
+  private readonly defaultWidth = 400;
+  private readonly defaultHeight = 400;
 
   public ngOnInit(): void {
     this.initSubscribe();
@@ -52,22 +54,22 @@ export class D3ChartComponent implements OnInit, OnDestroy {
     );
   }
 
-  private createPieChart(data: Array<DataItem>) {
-    const width = 400, height = 400, radius = Math.min(width, height) / 2;
+  private createPieChart(data: Array<DataItem>): void {
+    const radius = Math.min(this.defaultWidth, this.defaultHeight) / 2;
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
     d3.select(this.pieChart?.nativeElement).selectAll('*').remove();
 
     const svg = d3.select(this.pieChart?.nativeElement)
-      .attr('width', width)
-      .attr('height', height)
+      .attr('width', this.defaultWidth)
+      .attr('height', this.defaultHeight)
       .append('g')
-      .attr('transform', `translate(${width / 2}, ${height / 2})`);
+      .attr('transform', `translate(${this.defaultWidth / 2}, ${this.defaultHeight / 2})`);
 
     const pie = d3.pie<DataItem>().value(d => d.value);
-    const arc = d3.arc<any>().innerRadius(0).outerRadius(radius);
+    const arc = d3.arc<d3.PieArcDatum<DataItem>>().innerRadius(0).outerRadius(radius);
 
-    const paths = svg.selectAll('path')
+    const paths: d3.Selection<SVGPathElement, d3.PieArcDatum<DataItem>, SVGGElement, unknown> = svg.selectAll('path')
       .data(pie(data))
       .enter()
       .append('path')
@@ -77,16 +79,16 @@ export class D3ChartComponent implements OnInit, OnDestroy {
     this.setupTooltip(paths);
   }
 
-  private createBarChart(data: Array<DataItem>) {
-    const width = 400, height = 400, margin = 20;
-    const chartWidth = width - margin - margin;
-    const chartHeight = height - margin - margin;
+  private createBarChart(data: Array<DataItem>): void {
+    const margin = 20;
+    const chartWidth = this.defaultWidth - (margin * 2);
+    const chartHeight = this.defaultHeight - (margin * 2);
 
     d3.select(this.barChart?.nativeElement).selectAll('*').remove();
 
     const svg = d3.select(this.barChart?.nativeElement)
-      .attr('width', width)
-      .attr('height', height)
+      .attr('width', this.defaultWidth)
+      .attr('height', this.defaultHeight)
       .append('g')
       .attr('transform', `translate(${margin}, ${margin})`);
 
@@ -99,7 +101,7 @@ export class D3ChartComponent implements OnInit, OnDestroy {
       .domain([0, d3.max(data, d => d.value) as number])
       .range([chartHeight, 0]);
 
-    const bars = svg.append('g')
+    const bars: d3.Selection<SVGRectElement, DataItem, SVGGElement, unknown> = svg.append('g')
       .selectAll('rect')
       .data(data)
       .enter()
@@ -120,15 +122,15 @@ export class D3ChartComponent implements OnInit, OnDestroy {
       .call(d3.axisLeft(y));
   }
 
-  private setupTooltip(element: any) {
+  private setupTooltip(element: any): void {
     element
-      .on('mouseover',  (event: MouseEvent, d: any) => {
+      .on('mouseover', (event: MouseEvent, d: DataItem | d3.PieArcDatum<DataItem>) => {
         d3.select('#tooltip')
           .style('visibility', 'visible')
           .style('opacity', 1)
           .style('top', `${event.clientY + window.scrollY + 10}px`)
           .style('left', `${event.clientX + window.scrollX + 10}px`)
-          .text(`${d.data?.category || d.category}: ${d.data?.value || d.value}`);
+          .text(`${'data' in d ? d.data.category : d.category}: ${'data' in d ? d.data.value : d.value}`);
       })
       .on('mousemove', function (event: MouseEvent) {
         d3.select('#tooltip')
