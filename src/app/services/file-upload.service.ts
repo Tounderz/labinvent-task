@@ -21,7 +21,7 @@ export class FileUploadService {
       const result = event.target?.result as string;
       const data: Array<DataItem> = JSON.parse(result);
 
-      this.handleFileData(data);
+      this.onFileData(data);
       this.store.dispatch(addFileToHistory({
         historyData: this.getHistoryData(data, file.name)
       }));
@@ -30,7 +30,7 @@ export class FileUploadService {
     reader.readAsText(file);
   }
 
-  public handleFileData(data: Array<DataItem>): void {
+  public onFileData(data: Array<DataItem>): void {
     this.resetFilters();
     this.store.dispatch(setFilteredData({ filteredData: data }));
     this.store.dispatch(loadJsonData({ data }));

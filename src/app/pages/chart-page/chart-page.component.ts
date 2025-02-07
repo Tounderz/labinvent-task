@@ -15,10 +15,10 @@ export class ChartPageComponent {
   private fileUploadService: FileUploadService = inject(FileUploadService);
 
   public onFileChange(file: File): void {
-    this.fileUploadService.loadFile(file)
+    this.fileUploadService.loadFile(file);
   }
 
   public onSelectFile(file: HistoryData): void {
-    this.fileUploadService.handleFileData(file.data)
+    this.fileUploadService.onFileData(file.data);
   }
 }

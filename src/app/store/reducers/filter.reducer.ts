@@ -19,7 +19,6 @@ export const filterReducer = createReducer(
       sortOption: filterOptions.sortOption,
       minValueOption: filterOptions.minValueOption
     }
-
   })),
   on(setFilteredData, (state, { filteredData }) => ({
     ...state,

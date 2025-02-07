@@ -4,7 +4,8 @@ import {
   ViewChild,
   inject,
   OnInit,
-  OnDestroy, ChangeDetectorRef
+  OnDestroy,
+  ChangeDetectorRef
 } from '@angular/core';
 import * as d3 from 'd3';
 import {DataItem} from '../../types/data.types';
@@ -12,6 +13,8 @@ import {Observable, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {FilterState} from '../../types/filter.types';
 import {StoreTypes} from '../../types/store.types';
+import {DEFAULT_HEIGHT, DEFAULT_WIDTH} from './d3-chart-config';
+import {TooltipService} from './services/tooltip.service';
 
 @Component({
   selector: 'app-d3-chart',
@@ -25,46 +28,45 @@ export class D3ChartComponent implements OnInit, OnDestroy {
 
   private store: Store<StoreTypes> = inject(Store);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private tooltipService: TooltipService = inject(TooltipService);
 
   public filteredData$: Observable<FilterState> = this.store.select(state => state.filteredData);
   public data: Array<DataItem> = [];
   private subscriptions: Subscription = new Subscription();
-  private readonly defaultWidth = 400;
-  private readonly defaultHeight = 400;
 
   public ngOnInit(): void {
-    this.initSubscribe();
+    this.initSubscriptions();
   }
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
-  private initSubscribe(): void {
+  private initSubscriptions(): void {
     this.subscriptions.add(
-      this.filteredData$.subscribe(data => {
-          if (data.filteredData?.length) {
-            this.data = data.filteredData;
-            this.createPieChart(this.data);
-            this.createBarChart(this.data);
-          }
-
-        this.cdr.detectChanges();
-        })
+      this.filteredData$.subscribe((filterState: FilterState) => this.initFilterState(filterState))
     );
   }
 
+  private initFilterState(filterState: FilterState): void {
+    if (!filterState.filteredData?.length) { return; }
+    this.data = filterState.filteredData;
+    this.createPieChart(this.data);
+    this.createBarChart(this.data);
+    this.cdr.detectChanges();
+  }
+
   private createPieChart(data: Array<DataItem>): void {
-    const radius = Math.min(this.defaultWidth, this.defaultHeight) / 2;
+    const radius = Math.min(DEFAULT_WIDTH, DEFAULT_HEIGHT) / 2;
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
     d3.select(this.pieChart?.nativeElement).selectAll('*').remove();
 
     const svg = d3.select(this.pieChart?.nativeElement)
-      .attr('width', this.defaultWidth)
-      .attr('height', this.defaultHeight)
+      .attr('width', DEFAULT_WIDTH)
+      .attr('height', DEFAULT_HEIGHT)
       .append('g')
-      .attr('transform', `translate(${this.defaultWidth / 2}, ${this.defaultHeight / 2})`);
+      .attr('transform', `translate(${DEFAULT_WIDTH / 2}, ${DEFAULT_HEIGHT / 2})`);
 
     const pie = d3.pie<DataItem>().value(d => d.value);
     const arc = d3.arc<d3.PieArcDatum<DataItem>>().innerRadius(0).outerRadius(radius);
@@ -76,19 +78,19 @@ export class D3ChartComponent implements OnInit, OnDestroy {
       .attr('d', arc)
       .attr('fill', (d, i) => color(String(i)));
 
-    this.setupTooltip(paths);
+    this.tooltipService.setupTooltip(paths);
   }
 
   private createBarChart(data: Array<DataItem>): void {
     const margin = 20;
-    const chartWidth = this.defaultWidth - (margin * 2);
-    const chartHeight = this.defaultHeight - (margin * 2);
+    const chartWidth = DEFAULT_WIDTH - (margin * 2);
+    const chartHeight = DEFAULT_HEIGHT - (margin * 2);
 
     d3.select(this.barChart?.nativeElement).selectAll('*').remove();
 
     const svg = d3.select(this.barChart?.nativeElement)
-      .attr('width', this.defaultWidth)
-      .attr('height', this.defaultHeight)
+      .attr('width', DEFAULT_WIDTH)
+      .attr('height', DEFAULT_HEIGHT)
       .append('g')
       .attr('transform', `translate(${margin}, ${margin})`);
 
@@ -112,7 +114,7 @@ export class D3ChartComponent implements OnInit, OnDestroy {
       .attr('height', d => chartHeight - y(d.value))
       .attr('fill', 'steelblue');
 
-    this.setupTooltip(bars);
+    this.tooltipService.setupTooltip(bars);
 
     svg.append('g')
       .attr('transform', `translate(0, ${chartHeight})`)
@@ -120,29 +122,5 @@ export class D3ChartComponent implements OnInit, OnDestroy {
 
     svg.append('g')
       .call(d3.axisLeft(y));
-  }
-
-  private setupTooltip(element: any): void {
-    element
-      .on('mouseover', (event: MouseEvent, d: DataItem | d3.PieArcDatum<DataItem>) => {
-        d3.select('#tooltip')
-          .style('visibility', 'visible')
-          .style('opacity', 1)
-          .style('top', `${event.clientY + window.scrollY + 10}px`)
-          .style('left', `${event.clientX + window.scrollX + 10}px`)
-          .text(`${'data' in d ? d.data.category : d.category}: ${'data' in d ? d.data.value : d.value}`);
-      })
-      .on('mousemove', function (event: MouseEvent) {
-        d3.select('#tooltip')
-          .style('top', `${event.clientY + window.scrollY + 10}px`)
-          .style('left', `${event.clientX + window.scrollX + 10}px`);
-      })
-      .on('mouseout', () => {
-        d3.select('#tooltip')
-          .style('visibility', 'hidden')
-          .style('opacity', 0)
-          .style('top', 0)
-          .style('left', 0);
-      });
   }
 }

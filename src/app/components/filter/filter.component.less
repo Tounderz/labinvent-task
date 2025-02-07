@@ -1,3 +1,5 @@
+@import "variables";
+
 .form {
   display: flex;
   gap: 10px;
@@ -7,7 +9,7 @@
   width: 282px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: @md) {
   .form {
     flex-direction: column;
   }

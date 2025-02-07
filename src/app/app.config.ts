@@ -3,7 +3,6 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import {provideAnimations} from '@angular/platform-browser/animations';
-import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideStore} from '@ngrx/store';
 import {dataReducer} from './store/reducers/data.reducer';

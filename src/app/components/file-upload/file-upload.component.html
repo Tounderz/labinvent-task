@@ -7,8 +7,8 @@
     chooseLabel="Открыть"
     chooseIcon="pi pi-upload"
     [maxFileSize]="maxFileSize"
-    (onSelect)="onFileChange($event)"
     [auto]="true"
-    [customUpload]="true">
-  </p-fileUpload>
+    [customUpload]="true"
+    (onSelect)="onFileChange($event)"
+  ></p-fileUpload>
 </div>

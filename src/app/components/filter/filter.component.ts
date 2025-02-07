@@ -22,20 +22,17 @@ export class FilterComponent implements OnInit, OnDestroy {
   public readonly formFields = formFields;
   public formGroup: FormGroup = new FormGroup({});
   private subscriptions: Subscription = new Subscription();
-  private subscriptionsFilter: Subscription = new Subscription();
   private data: Array<DataItem> = [];
   private sortOption: string = '';
   private minValueOption: string = '';
 
   public ngOnInit(): void {
     this.initForm();
-    this.initSubscribe();
-    this.initSubscribeFilter();
+    this.initSubscriptions();
   }
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-    this.subscriptionsFilter.unsubscribe();
   }
 
   public applyFilters(): void {
@@ -44,7 +41,7 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   public getOptions(key: string): Array<MinValueOption> | Array<SortOption> {
-    return key === 'sortOrder' ? sortOptions : minValueOptions
+    return key === 'sortOrder' ? sortOptions : minValueOptions;
   }
 
   private initForm(): void {
@@ -56,22 +53,17 @@ export class FilterComponent implements OnInit, OnDestroy {
     this.formGroup = new FormGroup(group);
   }
 
-  private initSubscribe(): void {
-    this.subscriptions.add(
-      this.data$.subscribe(data => {
-        this.data = data;
-        this.applyFilters();
-      })
-    );
+  private initSubscriptions(): void {
+    this.subscriptions.add(this.data$.subscribe((data: Array<DataItem>) => this.onDataChange(data)));
+    this.subscriptions.add(this.filteredData$.subscribe((data: FilterState) => this.onFilterChange(data)));
   }
 
-  private initSubscribeFilter(): void {
-    this.subscriptionsFilter.add(
-      this.filteredData$.subscribe(data => this.updateFilterValues(data))
-    );
+  private onDataChange(data: Array<DataItem>): void {
+    this.data = data;
+    this.applyFilters();
   }
 
-  private updateFilterValues(data: FilterState): void {
+  private onFilterChange(data: FilterState): void {
     const { sortOption, minValueOption } = data.filterOptions;
     this.sortOption = sortOption.value;
     this.minValueOption = minValueOption.value;

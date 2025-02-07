@@ -2,7 +2,7 @@ import {FormFieldFilter, MinValueOption, SortOption} from "../../types/filter.ty
 
 export const formFields: Array<FormFieldFilter> = [
   {
-    label: 'Катерогия',
+    label: 'Категория',
     value: 'sortOrder',
   },
   {
